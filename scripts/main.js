@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         data.shift();
 
         data.map((row) => {
-            row[2] = parseFloat(row[2]) * 0.425;
+            row[2] = Math.round(parseFloat(row[2]) * 0.425 * 100) / 100;
             row[3] = parseFloat(row[3]);
-            row[4] = parseFloat(row[4]) * 16.387;
+            row[4] = Math.round(parseFloat(row[4]) * 16.387 * 100) / 100;
             row[5] = parseFloat(row[5]);
-            row[6] = parseFloat(row[6]) * 0.454;
+            row[6] = Math.round(parseFloat(row[6]) * 0.454 * 100) / 100;
             row[7] = parseFloat(row[7]);
             row[8] = parseFloat(`19${row[8]}`);
         });
@@ -68,5 +68,8 @@ function addChangeHandlerToSelections(chartSVG, data, selectedDimensions) {
 }
 
 function showDetails(data) {
-    //Todo: implement
+    data.forEach(
+        (value, index) =>
+            (document.getElementById(`details-${index}`).innerHTML = value),
+    );
 }
