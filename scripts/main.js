@@ -52,19 +52,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         drawChart(chartSVG, data, selectedDimensions);
     });
 
-    addChangeHandlerToSelections(selectedDimensions);
+    addChangeHandlerToSelections(chartSVG, data, selectedDimensions);
 });
 
-function addChangeHandlerToSelections(selectedDimensions) {
+function addChangeHandlerToSelections(chartSVG, data, selectedDimensions) {
     Object.keys(selectedDimensions).forEach((property) =>
         document
             .getElementById(`${property}-select`)
-            .addEventListener(
-                'change',
-                (event) =>
-                    (selectedDimensions[property] = parseInt(
-                        event.target.value,
-                    )),
-            ),
+            .addEventListener('change', (event) => {
+                selectedDimensions[property] = parseInt(event.target.value);
+
+                drawChart(chartSVG, data, selectedDimensions);
+            }),
     );
+}
+
+function showDetails(data) {
+    //Todo: implement
 }
