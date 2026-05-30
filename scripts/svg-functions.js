@@ -9,6 +9,7 @@ const STEP_TEXT_GAP = 3;
 const BACKGROUND_COLOR = '#cccccc';
 const AXIS_COLOR = '#000000';
 const TEXT_COLOR = '#000000';
+const BORDER_COLOR = '#000000';
 
 const AXIS_BORDERS = [
     { min: 0, max: 20, step: 5, stepCount: 4 }, // consumption
@@ -181,7 +182,7 @@ function drawDatapoints(svg, data, selectedDimensions) {
                     (((yMax - yValue) * 100) / (yMax - yMin)),
         };
         let color = '#ffffff';
-        let size = 5; //Todo
+        let size = 10; //Todo
 
         switch (selectedDimensions.color) {
             case 3:
@@ -261,7 +262,7 @@ function drawDatapoints(svg, data, selectedDimensions) {
                 break;
         }
 
-        let dataElement = drawCircle(position, color, size, svg);
+        let dataElement;
 
         switch (selectedDimensions.shape) {
             case 3:
@@ -281,20 +282,29 @@ function drawDatapoints(svg, data, selectedDimensions) {
                     case 8:
                         dataElement = drawCross(position, color, size, svg);
                         break;
+                    default:
+                        drawCircle(position, color, size, svg);
+                        break;
                 }
                 break;
             case 9:
                 switch (element[9]) {
-                    case 'american':
+                    case 'American':
                         dataElement = drawRect(position, color, size, svg);
                         break;
-                    case 'european':
+                    case 'European':
                         dataElement = drawTriangle(position, color, size, svg);
                         break;
-                    case 'japanese':
+                    case 'Japanese':
                         dataElement = drawCircle(position, color, size, svg);
                         break;
+                    default:
+                        drawCircle(position, color, size, svg);
+                        break;
                 }
+                break;
+            default:
+                drawCircle(position, color, size, svg);
                 break;
         }
 
@@ -307,10 +317,9 @@ function drawCircle(position, color, size, svg) {
     const circle = document.createElementNS(NAMESPACE, 'circle');
     circle.setAttribute('cx', `${position.x}`);
     circle.setAttribute('cy', `${position.y}`);
-    circle.setAttribute('r', size);
+    circle.setAttribute('r', size / 2);
     circle.setAttribute('fill', color);
-
-    //Todo: add border
+    circle.setAttribute('stroke', BORDER_COLOR);
 
     svg.appendChild(circle);
 
@@ -324,8 +333,7 @@ function drawRect(position, color, size, svg) {
     rect.setAttribute('width', size);
     rect.setAttribute('height', size);
     rect.setAttribute('fill', color);
-
-    //Todo: add border
+    rect.setAttribute('stroke', BORDER_COLOR);
 
     svg.appendChild(rect);
 
@@ -334,14 +342,19 @@ function drawRect(position, color, size, svg) {
 
 function drawTriangle(position, color, size, svg) {
     const triangle = document.createElementNS(NAMESPACE, 'polygon');
+
+    const topPoint = { x: position.x, y: position.y - size / 2 };
+    const leftPoint = { x: position.x - size / 2, y: position.y + size / 2 };
+    const rightPoint = { x: position.x + size / 2, y: position.y + size / 2 };
+
     triangle.setAttribute(
         'points',
-        `${position.x},${position.y - 10} ${position.x - 12},${position.y + 10} ${position.x + 12},${position.y + 10}`,
+        `${topPoint.x},${topPoint.y} 
+        ${leftPoint.x},${leftPoint.y} 
+        ${rightPoint.x},${rightPoint.y}`,
     );
     triangle.setAttribute('fill', color);
-
-    //Todo: add border
-    //Todo: add size
+    triangle.setAttribute('stroke', BORDER_COLOR);
 
     svg.appendChild(triangle);
 
@@ -350,15 +363,21 @@ function drawTriangle(position, color, size, svg) {
 
 function drawDiamond(position, color, size, svg) {
     const diamond = document.createElementNS(NAMESPACE, 'polygon');
+
+    const topPoint = { x: position.x, y: position.y - (size / 3) * 2 };
+    const leftPoint = { x: position.x - size / 2, y: position.y };
+    const rightPoint = { x: position.x + size / 2, y: position.y };
+    const bottomPoint = { x: position.x, y: position.y + (size / 3) * 2 };
+
     diamond.setAttribute(
         'points',
-        `${position.x},${position.y - 10} ${position.x - 12},${position.y + 10} ${position.x + 12},${position.y + 10}`,
+        `${topPoint.x},${topPoint.y} 
+        ${leftPoint.x},${leftPoint.y} 
+        ${bottomPoint.x},${bottomPoint.y} 
+        ${rightPoint.x},${rightPoint.y}`,
     );
     diamond.setAttribute('fill', color);
-
-    //Todo: add border
-    //Todo: adjust polygon
-    //Todo: add size
+    diamond.setAttribute('stroke', BORDER_COLOR);
 
     svg.appendChild(diamond);
 
@@ -367,15 +386,76 @@ function drawDiamond(position, color, size, svg) {
 
 function drawCross(position, color, size, svg) {
     const cross = document.createElementNS(NAMESPACE, 'polygon');
+
+    const sizeAdjust = (size / 5) * 3;
+    const sizeAdjustHalf = sizeAdjust / 2;
+
+    const topLeftPoint = {
+        x: position.x - sizeAdjustHalf,
+        y: position.y - sizeAdjust,
+    };
+    const topRightPoint = {
+        x: position.x + sizeAdjustHalf,
+        y: position.y - sizeAdjust,
+    };
+    const leftTopPoint = {
+        x: position.x - sizeAdjust,
+        y: position.y - sizeAdjustHalf,
+    };
+    const leftBottomPoint = {
+        x: position.x - sizeAdjust,
+        y: position.y + sizeAdjustHalf,
+    };
+    const rightTopPoint = {
+        x: position.x + sizeAdjust,
+        y: position.y - sizeAdjustHalf,
+    };
+    const rightBottomPoint = {
+        x: position.x + sizeAdjust,
+        y: position.y + sizeAdjustHalf,
+    };
+    const bottomLeftPoint = {
+        x: position.x - sizeAdjustHalf,
+        y: position.y + sizeAdjust,
+    };
+    const bottomRightPoint = {
+        x: position.x + sizeAdjustHalf,
+        y: position.y + sizeAdjust,
+    };
+    const topLeftMiddlePoint = {
+        x: position.x - sizeAdjustHalf,
+        y: position.y - sizeAdjustHalf,
+    };
+    const topRightMiddlePoint = {
+        x: position.x + sizeAdjustHalf,
+        y: position.y - sizeAdjustHalf,
+    };
+    const bottomLeftMiddlePoint = {
+        x: position.x - sizeAdjustHalf,
+        y: position.y + sizeAdjustHalf,
+    };
+    const bottomRightMiddlePoint = {
+        x: position.x + sizeAdjustHalf,
+        y: position.y + sizeAdjustHalf,
+    };
+
     cross.setAttribute(
         'points',
-        `${position.x},${position.y - 10} ${position.x - 12},${position.y + 10} ${position.x + 12},${position.y + 10}`,
+        `${topLeftPoint.x},${topLeftPoint.y} 
+        ${topRightPoint.x},${topRightPoint.y} 
+        ${topRightMiddlePoint.x},${topRightMiddlePoint.y} 
+        ${rightTopPoint.x},${rightTopPoint.y} 
+        ${rightBottomPoint.x},${rightBottomPoint.y} 
+        ${bottomRightMiddlePoint.x},${bottomRightMiddlePoint.y} 
+        ${bottomRightPoint.x},${bottomRightPoint.y} 
+        ${bottomLeftPoint.x},${bottomLeftPoint.y} 
+        ${bottomLeftMiddlePoint.x},${bottomLeftMiddlePoint.y} 
+        ${leftBottomPoint.x},${leftBottomPoint.y} 
+        ${leftTopPoint.x},${leftTopPoint.y} 
+        ${topLeftMiddlePoint.x},${topLeftMiddlePoint.y}`,
     );
     cross.setAttribute('fill', color);
-
-    //Todo: add border
-    //Todo: adjust polygon
-    //Todo: add size
+    cross.setAttribute('stroke', BORDER_COLOR);
 
     svg.appendChild(cross);
 
