@@ -52,10 +52,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         drawChart(chartSVG, data, selectedDimensions);
     });
 
-    addChangeHandlerToSelections(chartSVG, data, selectedDimensions);
-});
-
-function addChangeHandlerToSelections(chartSVG, data, selectedDimensions) {
     Object.keys(selectedDimensions).forEach((property) =>
         document
             .getElementById(`${property}-select`)
@@ -65,7 +61,7 @@ function addChangeHandlerToSelections(chartSVG, data, selectedDimensions) {
                 drawChart(chartSVG, data, selectedDimensions);
             }),
     );
-}
+});
 
 function showDetails(data) {
     data.forEach(

@@ -6,6 +6,10 @@ const STEP_LINE_LENGHT = 15;
 const STEP_FONT_SIZE = 17;
 const STEP_TEXT_GAP = 3;
 
+const BACKGROUND_COLOR = '#cccccc';
+const AXIS_COLOR = '#000000';
+const TEXT_COLOR = '#000000';
+
 const AXIS_BORDERS = [
     { min: 0, max: 20, step: 5, stepCount: 4 }, // consumption
     { min: 0, max: 8, step: 1, stepCount: 8 }, // cylinders
@@ -28,16 +32,15 @@ const SIZE_BORDERS = [
 
 function drawChart(svg, data, selectedDimensions) {
     svg.innerHTML = '';
+    drawRect(
+        { x: SVG_SIZE / 2, y: SVG_SIZE / 2 },
+        BACKGROUND_COLOR,
+        SVG_SIZE,
+        svg,
+    );
     drawXAxis(svg, selectedDimensions.xAxis - 2);
     drawYAxis(svg, selectedDimensions.yAxis - 2);
-    // drawDatapoints(chartSVG, data, selectedDimensions, {
-    //     xMin: 0, //Todo
-    //     xMax: 0, //Todo
-    //     yMin: 0, //Todo
-    //     yMax: 0, //Todo
-    //     xStep: 0, //Todo
-    //     yStep: 0, //Todo
-    // });
+    drawDatapoints(svg, data, selectedDimensions);
 }
 
 function drawXAxis(svg, dimension) {
@@ -50,7 +53,7 @@ function drawXAxis(svg, dimension) {
         );
         axis.setAttribute('y1', `${SVG_SIZE - CHART_OFFSET}`);
         axis.setAttribute('y2', `${SVG_SIZE - CHART_OFFSET}`);
-        axis.setAttribute('stroke', '#000000');
+        axis.setAttribute('stroke', AXIS_COLOR);
         svg.appendChild(axis);
 
         drawText(
@@ -77,7 +80,7 @@ function drawXAxis(svg, dimension) {
                 'y2',
                 `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT}`,
             );
-            axis.setAttribute('stroke', '#000000');
+            axis.setAttribute('stroke', AXIS_COLOR);
             svg.appendChild(axis);
 
             drawText(
@@ -108,7 +111,7 @@ function drawYAxis(svg, dimension) {
             'y2',
             `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT}`,
         );
-        axis.setAttribute('stroke', '#000000');
+        axis.setAttribute('stroke', AXIS_COLOR);
         svg.appendChild(axis);
 
         drawText(
@@ -132,7 +135,7 @@ function drawYAxis(svg, dimension) {
             axis.setAttribute('x2', `${CHART_OFFSET}`);
             axis.setAttribute('y1', `${yPosition}`);
             axis.setAttribute('y2', `${yPosition}`);
-            axis.setAttribute('stroke', '#000000');
+            axis.setAttribute('stroke', AXIS_COLOR);
             svg.appendChild(axis);
 
             drawText(
@@ -149,13 +152,34 @@ function drawYAxis(svg, dimension) {
     }
 }
 
-function drawDatapoints(chartSVG, data, selectedDimensions, axisDimensions) {
-    data.forEach((element) => {
-        const xValue = element[selectedDimensions.xAxis];
-        const yValue = element[selectedDimensions.yAxis];
-        const sizeValue = element[selectedDimensions.size];
+function drawDatapoints(svg, data, selectedDimensions) {
+    const xMin = AXIS_BORDERS[selectedDimensions.xAxis - 2].min;
+    const xMax = AXIS_BORDERS[selectedDimensions.xAxis - 2].max;
+    const yMin = AXIS_BORDERS[selectedDimensions.yAxis - 2].min;
+    const yMax = AXIS_BORDERS[selectedDimensions.yAxis - 2].max;
 
-        const position = 0; //Todo
+    data.forEach((element) => {
+        const xValue = element[selectedDimensions.xAxis]
+            ? element[selectedDimensions.xAxis]
+            : xMin;
+        const yValue = element[selectedDimensions.yAxis]
+            ? element[selectedDimensions.yAxis]
+            : yMin;
+        const sizeValue = element[selectedDimensions.size]
+            ? element[selectedDimensions.size]
+            : 10;
+
+        const position = {
+            x:
+                CHART_OFFSET +
+                ((SVG_SIZE - CHART_OFFSET * 2) / 100) *
+                    (((xMax - xValue) * 100) / (xMax - xMin)),
+            y:
+                SVG_SIZE -
+                CHART_OFFSET -
+                ((SVG_SIZE - CHART_OFFSET * 2) / 100) *
+                    (((yMax - yValue) * 100) / (yMax - yMin)),
+        };
         let color = '#ffffff';
         let size = 5; //Todo
 
@@ -181,103 +205,105 @@ function drawDatapoints(chartSVG, data, selectedDimensions, axisDimensions) {
                 break;
             case 8:
                 switch (element[8]) {
-                    case 70:
+                    case 1970:
                         color = '#fcfbfd';
                         break;
-                    case 71:
+                    case 1971:
                         color = '#ede4f5';
                         break;
-                    case 72:
+                    case 1972:
                         color = '#d6c3e8';
                         break;
-                    case 73:
+                    case 1973:
                         color = '#c0a7d8';
                         break;
-                    case 74:
+                    case 1974:
                         color = '#a887c8';
                         break;
-                    case 75:
+                    case 1975:
                         color = '#8e6ab2';
                         break;
-                    case 76:
+                    case 1976:
                         color = '#7d56a3';
                         break;
-                    case 77:
+                    case 1977:
                         color = '#6c4394';
                         break;
-                    case 78:
+                    case 1978:
                         color = '#5c3484';
                         break;
-                    case 79:
+                    case 1979:
                         color = '#47216e';
                         break;
-                    case 80:
+                    case 1980:
                         color = '#2b084d';
                         break;
-                    case 81:
+                    case 1981:
                         color = '#1a0331';
                         break;
-                    case 82:
+                    case 1982:
                         color = '#000000';
                         break;
                 }
                 break;
             case 9:
                 switch (element[9]) {
-                    case 'american':
+                    case 'American':
                         color = '#66c2a5';
                         break;
-                    case 'european':
+                    case 'European':
                         color = '#fc8d62';
                         break;
-                    case 'japanese':
+                    case 'Japanese':
                         color = '#8da0cb';
                         break;
                 }
                 break;
         }
 
+        let dataElement = drawCircle(position, color, size, svg);
+
         switch (selectedDimensions.shape) {
-            case -1:
-                drawCircle(position, color, size, chartSVG, element);
-                break;
             case 3:
                 switch (element[3]) {
                     case 3:
-                        drawRect(position, color, size, chartSVG, element);
+                        dataElement = drawRect(position, color, size, svg);
                         break;
                     case 4:
-                        drawCircle(position, color, size, chartSVG, element);
+                        dataElement = drawCircle(position, color, size, svg);
                         break;
                     case 5:
-                        drawTriangle(position, color, size, chartSVG, element);
+                        dataElement = drawTriangle(position, color, size, svg);
                         break;
                     case 6:
-                        drawDiamond(position, color, size, chartSVG, element);
+                        dataElement = drawDiamond(position, color, size, svg);
                         break;
                     case 8:
-                        drawCross(position, color, size, chartSVG, element);
+                        dataElement = drawCross(position, color, size, svg);
                         break;
                 }
                 break;
             case 9:
                 switch (element[9]) {
                     case 'american':
-                        drawRect(position, color, size, chartSVG, element);
+                        dataElement = drawRect(position, color, size, svg);
                         break;
                     case 'european':
-                        drawTriangle(position, color, size, chartSVG, element);
+                        dataElement = drawTriangle(position, color, size, svg);
                         break;
                     case 'japanese':
-                        drawCircle(position, color, size, chartSVG, element);
+                        dataElement = drawCircle(position, color, size, svg);
                         break;
                 }
                 break;
         }
+
+        addClickEventHandler(dataElement, element);
+        addHoverEventHandler(svg, dataElement, position, element);
     });
 }
 
-function drawCircle(position, color, size, svg, elementData) {
+function drawCircle(position, color, size, svg) {
     const circle = document.createElementNS(NAMESPACE, 'circle');
     circle.setAttribute('cx', `${position.x}`);
     circle.setAttribute('cy', `${position.y}`);
@@ -286,17 +312,12 @@ function drawCircle(position, color, size, svg, elementData) {
 
     //Todo: add border
 
-    circle.addEventListener('click', () => showDetails(elementData));
-    circle.addEventListener('mouseover', () =>
-        drawText(position, elementData[0]),
-    );
-
     svg.appendChild(circle);
 
     return circle;
 }
 
-function drawRect(position, color, size, svg, elementData) {
+function drawRect(position, color, size, svg) {
     const rect = document.createElementNS(NAMESPACE, 'rect');
     rect.setAttribute('x', `${position.x - size / 2}`);
     rect.setAttribute('y', `${position.y - size / 2}`);
@@ -306,17 +327,12 @@ function drawRect(position, color, size, svg, elementData) {
 
     //Todo: add border
 
-    rect.addEventListener('click', () => showDetails(elementData));
-    rect.addEventListener('mouseover', () =>
-        drawText(position, elementData[0]),
-    );
-
     svg.appendChild(rect);
 
     return rect;
 }
 
-function drawTriangle(position, color, size, svg, elementData) {
+function drawTriangle(position, color, size, svg) {
     const triangle = document.createElementNS(NAMESPACE, 'polygon');
     triangle.setAttribute(
         'points',
@@ -327,17 +343,12 @@ function drawTriangle(position, color, size, svg, elementData) {
     //Todo: add border
     //Todo: add size
 
-    triangle.addEventListener('click', () => showDetails(elementData));
-    triangle.addEventListener('mouseover', () =>
-        drawText(position, elementData[0]),
-    );
-
     svg.appendChild(triangle);
 
     return triangle;
 }
 
-function drawDiamond(position, color, size, svg, elementData) {
+function drawDiamond(position, color, size, svg) {
     const diamond = document.createElementNS(NAMESPACE, 'polygon');
     diamond.setAttribute(
         'points',
@@ -349,17 +360,12 @@ function drawDiamond(position, color, size, svg, elementData) {
     //Todo: adjust polygon
     //Todo: add size
 
-    diamond.addEventListener('click', () => showDetails(elementData));
-    diamond.addEventListener('mouseover', () =>
-        drawText(position, elementData[0]),
-    );
-
     svg.appendChild(diamond);
 
     return diamond;
 }
 
-function drawCross(position, color, size, svg, elementData) {
+function drawCross(position, color, size, svg) {
     const cross = document.createElementNS(NAMESPACE, 'polygon');
     cross.setAttribute(
         'points',
@@ -370,11 +376,6 @@ function drawCross(position, color, size, svg, elementData) {
     //Todo: add border
     //Todo: adjust polygon
     //Todo: add size
-
-    cross.addEventListener('click', () => showDetails(elementData));
-    cross.addEventListener('mouseover', () =>
-        drawText(position, elementData[0]),
-    );
 
     svg.appendChild(cross);
 
@@ -398,12 +399,12 @@ function drawText(svg, position, fontSize, textAlignment, text) {
             );
             break;
         default:
-            textElement.setAttribute('y', `${position.y + fontSize}`);
+            textElement.setAttribute('y', `${position.y}`);
             break;
     }
 
     textElement.setAttribute('font-size', `${fontSize}`);
-    textElement.setAttribute('fill', '#000000');
+    textElement.setAttribute('fill', TEXT_COLOR);
     textElement.innerHTML = text;
 
     svg.appendChild(textElement);
@@ -425,4 +426,25 @@ function drawText(svg, position, fontSize, textAlignment, text) {
             textElement.setAttribute('x', `${position.x}`);
             break;
     }
+
+    return textElement;
+}
+
+function addClickEventHandler(element, data) {
+    element.addEventListener('click', () => showDetails(data));
+}
+
+function addHoverEventHandler(svg, element, position, data) {
+    const textElement = drawText(
+        svg,
+        position,
+        17,
+        { horizontal: 'left', vertical: 'bottom' },
+        data[0],
+    );
+
+    textElement.remove();
+
+    element.addEventListener('mouseenter', () => svg.appendChild(textElement));
+    element.addEventListener('mouseleave', () => textElement.remove());
 }
