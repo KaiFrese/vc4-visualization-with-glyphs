@@ -5,6 +5,7 @@ const CHART_OFFSET = 100;
 const STEP_LINE_LENGHT = 15;
 const STEP_FONT_SIZE = 17;
 const STEP_TEXT_GAP = 3;
+const MIN_SIZE = 15;
 
 const BACKGROUND_COLOR = '#cccccc';
 const AXIS_COLOR = '#000000';
@@ -22,13 +23,13 @@ const AXIS_BORDERS = [
 ];
 
 const SIZE_BORDERS = [
-    { min: 10, max: 30 }, // consumption
-    { min: 10, max: 20 }, // cylinders
-    { min: 10, max: 28 }, // displacement
-    { min: 10, max: 24 }, // horsepower
-    { min: 10, max: 22 }, // weight
-    { min: 10, max: 22 }, // acceleration
-    { min: 10, max: 34 }, // year
+    { min: 2, max: 20 }, // consumption
+    { min: 2, max: 8 }, // cylinders
+    { min: 1000, max: 8000 }, // displacement
+    { min: 40, max: 250 }, // horsepower
+    { min: 500, max: 2500 }, // weight
+    { min: 5, max: 25 }, // acceleration
+    { min: 1970, max: 1982 }, // year
 ];
 
 function drawChart(svg, data, selectedDimensions) {
@@ -168,21 +169,27 @@ function drawDatapoints(svg, data, selectedDimensions) {
             : yMin;
         const sizeValue = element[selectedDimensions.size]
             ? element[selectedDimensions.size]
-            : 10;
+            : (MIN_SIZE / 3) * 2;
 
         const position = {
             x:
                 CHART_OFFSET +
                 ((SVG_SIZE - CHART_OFFSET * 2) / 100) *
-                    (((xMax - xValue) * 100) / (xMax - xMin)),
+                    ((xValue * 100) / (xMax - xMin)),
             y:
                 SVG_SIZE -
                 CHART_OFFSET -
                 ((SVG_SIZE - CHART_OFFSET * 2) / 100) *
-                    (((yMax - yValue) * 100) / (yMax - yMin)),
+                    ((yValue * 100) / (yMax - yMin)),
         };
         let color = '#ffffff';
-        let size = 10; //Todo
+        let size =
+            selectedDimensions.size - 2 >= 0
+                ? MIN_SIZE *
+                  Math.sqrt(
+                      sizeValue / SIZE_BORDERS[selectedDimensions.size - 2].min,
+                  )
+                : MIN_SIZE;
 
         switch (selectedDimensions.color) {
             case 3:
@@ -283,7 +290,7 @@ function drawDatapoints(svg, data, selectedDimensions) {
                         dataElement = drawCross(position, color, size, svg);
                         break;
                     default:
-                        drawCircle(position, color, size, svg);
+                        dataElement = drawCircle(position, color, size, svg);
                         break;
                 }
                 break;
@@ -299,12 +306,12 @@ function drawDatapoints(svg, data, selectedDimensions) {
                         dataElement = drawCircle(position, color, size, svg);
                         break;
                     default:
-                        drawCircle(position, color, size, svg);
+                        dataElement = drawCircle(position, color, size, svg);
                         break;
                 }
                 break;
             default:
-                drawCircle(position, color, size, svg);
+                dataElement = drawCircle(position, color, size, svg);
                 break;
         }
 
