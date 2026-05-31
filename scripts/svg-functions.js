@@ -45,6 +45,17 @@ function drawChart(svg, data, selectedDimensions) {
     drawDatapoints(svg, data, selectedDimensions);
 }
 
+function drawChartDescriptions(
+    colorDescriptionSVG,
+    shapeDescriptionSVG,
+    sizeDescriptionSVG,
+    selectedDimensions,
+) {
+    colorDescriptionSVG.style.display = 'none';
+    shapeDescriptionSVG.style.display = 'none';
+    sizeDescriptionSVG.style.display = 'none';
+}
+
 function drawXAxis(svg, dimension) {
     if (dimension >= 0) {
         const axis = document.createElementNS(NAMESPACE, 'line');

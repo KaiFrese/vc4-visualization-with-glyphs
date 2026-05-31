@@ -13,7 +13,6 @@
             <label>
                 X-Achse
                 <select id="xAxis-select">
-                    <option value="-1"></option>
                     <option value="7">Beschleunigung</option>
                     <option value="6">Gewicht</option>
                     <option value="5">PS</option>
@@ -26,20 +25,6 @@
             <label>
                 Y-Achse
                 <select id="yAxis-select">
-                    <option value="-1"></option>
-                    <option value="7">Beschleunigung</option>
-                    <option value="6">Gewicht</option>
-                    <option value="5">PS</option>
-                    <option value="2">Verbrauch</option>
-                    <option value="4">Hubraum</option>
-                    <option value="3">Zylinder</option>
-                    <option value="8">Jahr</option>
-                </select>
-            </label>
-            <label>
-                Größe der Glyphe
-                <select id="size-select">
-                    <option value="-1"></option>
                     <option value="7">Beschleunigung</option>
                     <option value="6">Gewicht</option>
                     <option value="5">PS</option>
@@ -66,16 +51,41 @@
                     <option value="3">Zylinder</option>
                 </select>
             </label>
+            <label>
+                Größe der Glyphe
+                <select id="size-select">
+                    <option value="-1"></option>
+                    <option value="7">Beschleunigung</option>
+                    <option value="6">Gewicht</option>
+                    <option value="5">PS</option>
+                    <option value="2">Verbrauch</option>
+                    <option value="4">Hubraum</option>
+                    <option value="3">Zylinder</option>
+                    <option value="8">Jahr</option>
+                </select>
+            </label>
         </div>
         <div>
-            <label> ??? </label>
-            <label> ??? </label>
-            <label> ??? </label>
+            <label id="color-description-label"></label>
             <svg
-                id="legend-svg"
+                id="color-description-svg"
                 width="100%"
                 height="100%"
-                viewBox="0 0 1000 100"
+                viewBox="0 0 100 100"
+            ></svg>
+            <label id="shape-description-label"></label>
+            <svg
+                id="shape-description-svg"
+                width="100%"
+                height="100%"
+                viewBox="0 0 100 100"
+            ></svg>
+            <label id="size-description-label"></label>
+            <svg
+                id="size-description-svg"
+                width="100%"
+                height="100%"
+                viewBox="0 0 100 100"
             ></svg>
         </div>
         <div>
