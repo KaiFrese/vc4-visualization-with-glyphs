@@ -89,12 +89,21 @@ function drawChartDescriptions(svg, selectedDimensions) {
     ).setAttribute('font-weight', 'bold');
 
     if (selectedDimensions.size > 1) {
-        const maxSize =
+        let maxSize =
             MIN_SIZE *
             Math.sqrt(
                 SIZE_BORDERS[selectedDimensions.size - 2].max /
                     SIZE_BORDERS[selectedDimensions.size - 2].min,
             );
+
+        if (selectedDimensions.size === 8) {
+            maxSize =
+                MIN_SIZE *
+                Math.sqrt(
+                    SIZE_BORDERS[selectedDimensions.size - 2].max -
+                        SIZE_BORDERS[selectedDimensions.size - 2].min,
+                );
+        }
 
         drawCircle(
             { x: 840, y: CHART_DESCRIPTION_Y_POSITION },
@@ -479,6 +488,14 @@ function drawDatapoints(svg, data, selectedDimensions) {
                       sizeValue / SIZE_BORDERS[selectedDimensions.size - 2].min,
                   )
                 : MIN_SIZE;
+
+        if (selectedDimensions.size === 8) {
+            size =
+                MIN_SIZE *
+                Math.sqrt(
+                    sizeValue - SIZE_BORDERS[selectedDimensions.size - 2].min,
+                );
+        }
 
         switch (selectedDimensions.color) {
             case 3:
