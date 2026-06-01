@@ -1,7 +1,7 @@
 const NAMESPACE = 'http://www.w3.org/2000/svg';
 
-const SVG_SIZE = 1100;
-const CHART_OFFSET = 150;
+const SVG_SIZE = 1050;
+const CHART_OFFSET = 125;
 const STEP_LINE_LENGHT = 15;
 const STEP_FONT_SIZE = 17;
 const STEP_TEXT_GAP = 3;
@@ -59,10 +59,153 @@ const SIZE_BORDERS = [
 
 function drawChart(svg, data, selectedDimensions) {
     svg.innerHTML = '';
-    drawXAxis(svg, selectedDimensions.xAxis - 2);
-    drawYAxis(svg, selectedDimensions.yAxis - 2);
+    drawXAxis(svg, selectedDimensions.xAxis);
+    drawYAxis(svg, selectedDimensions.yAxis);
     drawDatapoints(svg, data, selectedDimensions);
     drawChartDescriptions(svg, selectedDimensions);
+}
+
+function drawXAxis(svg, dimension) {
+    if (dimension >= 2) {
+        const axis = document.createElementNS(NAMESPACE, 'line');
+        axis.setAttribute('x1', `${CHART_OFFSET - STEP_LINE_LENGHT}`);
+        axis.setAttribute(
+            'x2',
+            `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT * 2}`,
+        );
+        axis.setAttribute('y1', `${SVG_SIZE - CHART_OFFSET}`);
+        axis.setAttribute('y2', `${SVG_SIZE - CHART_OFFSET}`);
+        axis.setAttribute('stroke', AXIS_COLOR);
+        svg.appendChild(axis);
+
+        drawText(
+            svg,
+            {
+                x: SVG_SIZE / 2,
+                y:
+                    SVG_SIZE -
+                    CHART_OFFSET +
+                    STEP_LINE_LENGHT +
+                    STEP_TEXT_GAP +
+                    50,
+            },
+            STEP_FONT_SIZE,
+            { horizontal: 'center', vertical: 'top' },
+            getDimensionLabel('axis', dimension),
+        ).setAttribute('font-weight', 'bold');
+
+        drawText(
+            svg,
+            {
+                x: CHART_OFFSET,
+                y: SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT + STEP_TEXT_GAP,
+            },
+            STEP_FONT_SIZE,
+            { horizontal: 'center', vertical: 'top' },
+            `${AXIS_BORDERS[dimension - 2].min}`,
+        );
+
+        const stepWidth =
+            (SVG_SIZE - 2 * CHART_OFFSET) /
+            AXIS_BORDERS[dimension - 2].stepCount;
+
+        for (let i = 0; i < AXIS_BORDERS[dimension - 2].stepCount; i++) {
+            const xPosition = CHART_OFFSET + stepWidth * (i + 1);
+            const axis = document.createElementNS(NAMESPACE, 'line');
+            axis.setAttribute('x1', `${xPosition}`);
+            axis.setAttribute('x2', `${xPosition}`);
+            axis.setAttribute('y1', `${SVG_SIZE - CHART_OFFSET}`);
+            axis.setAttribute(
+                'y2',
+                `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT}`,
+            );
+            axis.setAttribute('stroke', AXIS_COLOR);
+            svg.appendChild(axis);
+
+            drawText(
+                svg,
+                {
+                    x: xPosition,
+                    y:
+                        SVG_SIZE -
+                        CHART_OFFSET +
+                        STEP_LINE_LENGHT +
+                        STEP_TEXT_GAP,
+                },
+                STEP_FONT_SIZE,
+                { horizontal: 'center', vertical: 'top' },
+                `${AXIS_BORDERS[dimension - 2].min + AXIS_BORDERS[dimension - 2].step * (i + 1)}`,
+            );
+        }
+    }
+}
+
+function drawYAxis(svg, dimension) {
+    if (dimension >= 2) {
+        const axis = document.createElementNS(NAMESPACE, 'line');
+        axis.setAttribute('x1', `${CHART_OFFSET}`);
+        axis.setAttribute('x2', `${CHART_OFFSET}`);
+        axis.setAttribute('y1', `${CHART_OFFSET - STEP_LINE_LENGHT * 2}`);
+        axis.setAttribute(
+            'y2',
+            `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT}`,
+        );
+        axis.setAttribute('stroke', AXIS_COLOR);
+        svg.appendChild(axis);
+
+        const textElement = drawText(
+            svg,
+            {
+                x: CHART_OFFSET - STEP_LINE_LENGHT - STEP_TEXT_GAP - 50,
+                y: SVG_SIZE / 2,
+            },
+            STEP_FONT_SIZE,
+            { horizontal: 'center', vertical: 'middle' },
+            getDimensionLabel('axis', dimension),
+        );
+        textElement.setAttribute('font-weight', 'bold');
+        textElement.setAttribute(
+            'transform',
+            `rotate(-90, ${CHART_OFFSET - STEP_LINE_LENGHT - STEP_TEXT_GAP - 50}, ${SVG_SIZE / 2})`,
+        );
+
+        drawText(
+            svg,
+            {
+                x: CHART_OFFSET - STEP_LINE_LENGHT - STEP_TEXT_GAP,
+                y: SVG_SIZE - CHART_OFFSET,
+            },
+            STEP_FONT_SIZE,
+            { horizontal: 'right', vertical: 'middle' },
+            `${AXIS_BORDERS[dimension - 2].min}`,
+        );
+
+        const stepWidth =
+            (SVG_SIZE - 2 * CHART_OFFSET) /
+            AXIS_BORDERS[dimension - 2].stepCount;
+
+        for (let i = 0; i < AXIS_BORDERS[dimension - 2].stepCount; i++) {
+            const yPosition = SVG_SIZE - CHART_OFFSET - stepWidth * (i + 1);
+            const axis = document.createElementNS(NAMESPACE, 'line');
+            axis.setAttribute('x1', `${CHART_OFFSET - STEP_LINE_LENGHT}`);
+            axis.setAttribute('x2', `${CHART_OFFSET}`);
+            axis.setAttribute('y1', `${yPosition}`);
+            axis.setAttribute('y2', `${yPosition}`);
+            axis.setAttribute('stroke', AXIS_COLOR);
+            svg.appendChild(axis);
+
+            drawText(
+                svg,
+                {
+                    x: CHART_OFFSET - STEP_LINE_LENGHT - STEP_TEXT_GAP,
+                    y: yPosition,
+                },
+                STEP_FONT_SIZE,
+                { horizontal: 'right', vertical: 'middle' },
+                `${AXIS_BORDERS[dimension - 2].min + AXIS_BORDERS[dimension - 2].step * (i + 1)}`,
+            );
+        }
+    }
 }
 
 function drawChartDescriptions(svg, selectedDimensions) {
@@ -71,21 +214,21 @@ function drawChartDescriptions(svg, selectedDimensions) {
         { x: 2, y: CHART_DESCRIPTION_LABEL_Y_POSITION },
         STEP_FONT_SIZE,
         { horizontal: 'left', vertical: 'middle' },
-        getDescriptionLabel('color', selectedDimensions.color),
+        getDimensionLabel('color', selectedDimensions.color),
     ).setAttribute('font-weight', 'bold');
     drawText(
         svg,
         { x: 530, y: CHART_DESCRIPTION_LABEL_Y_POSITION },
         STEP_FONT_SIZE,
         { horizontal: 'left', vertical: 'middle' },
-        getDescriptionLabel('shape', selectedDimensions.shape),
+        getDimensionLabel('shape', selectedDimensions.shape),
     ).setAttribute('font-weight', 'bold');
     drawText(
         svg,
         { x: 830, y: CHART_DESCRIPTION_LABEL_Y_POSITION },
         STEP_FONT_SIZE,
         { horizontal: 'left', vertical: 'middle' },
-        getDescriptionLabel('size', selectedDimensions.size),
+        getDimensionLabel('size', selectedDimensions.size),
     ).setAttribute('font-weight', 'bold');
 
     if (selectedDimensions.size > 1) {
@@ -343,115 +486,6 @@ function drawChartDescriptions(svg, selectedDimensions) {
     }
 }
 
-function drawXAxis(svg, dimension) {
-    if (dimension >= 0) {
-        const axis = document.createElementNS(NAMESPACE, 'line');
-        axis.setAttribute('x1', `${CHART_OFFSET - STEP_LINE_LENGHT}`);
-        axis.setAttribute(
-            'x2',
-            `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT * 2}`,
-        );
-        axis.setAttribute('y1', `${SVG_SIZE - CHART_OFFSET}`);
-        axis.setAttribute('y2', `${SVG_SIZE - CHART_OFFSET}`);
-        axis.setAttribute('stroke', AXIS_COLOR);
-        svg.appendChild(axis);
-
-        drawText(
-            svg,
-            {
-                x: CHART_OFFSET,
-                y: SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT + STEP_TEXT_GAP,
-            },
-            STEP_FONT_SIZE,
-            { horizontal: 'center', vertical: 'top' },
-            `${AXIS_BORDERS[dimension].min}`,
-        );
-
-        const stepWidth =
-            (SVG_SIZE - 2 * CHART_OFFSET) / AXIS_BORDERS[dimension].stepCount;
-
-        for (let i = 0; i < AXIS_BORDERS[dimension].stepCount; i++) {
-            const xPosition = CHART_OFFSET + stepWidth * (i + 1);
-            const axis = document.createElementNS(NAMESPACE, 'line');
-            axis.setAttribute('x1', `${xPosition}`);
-            axis.setAttribute('x2', `${xPosition}`);
-            axis.setAttribute('y1', `${SVG_SIZE - CHART_OFFSET}`);
-            axis.setAttribute(
-                'y2',
-                `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT}`,
-            );
-            axis.setAttribute('stroke', AXIS_COLOR);
-            svg.appendChild(axis);
-
-            drawText(
-                svg,
-                {
-                    x: xPosition,
-                    y:
-                        SVG_SIZE -
-                        CHART_OFFSET +
-                        STEP_LINE_LENGHT +
-                        STEP_TEXT_GAP,
-                },
-                STEP_FONT_SIZE,
-                { horizontal: 'center', vertical: 'top' },
-                `${AXIS_BORDERS[dimension].min + AXIS_BORDERS[dimension].step * (i + 1)}`,
-            );
-        }
-    }
-}
-
-function drawYAxis(svg, dimension) {
-    if (dimension >= 0) {
-        const axis = document.createElementNS(NAMESPACE, 'line');
-        axis.setAttribute('x1', `${CHART_OFFSET}`);
-        axis.setAttribute('x2', `${CHART_OFFSET}`);
-        axis.setAttribute('y1', `${CHART_OFFSET - STEP_LINE_LENGHT * 2}`);
-        axis.setAttribute(
-            'y2',
-            `${SVG_SIZE - CHART_OFFSET + STEP_LINE_LENGHT}`,
-        );
-        axis.setAttribute('stroke', AXIS_COLOR);
-        svg.appendChild(axis);
-
-        drawText(
-            svg,
-            {
-                x: CHART_OFFSET - STEP_LINE_LENGHT - STEP_TEXT_GAP,
-                y: SVG_SIZE - CHART_OFFSET,
-            },
-            STEP_FONT_SIZE,
-            { horizontal: 'right', vertical: 'middle' },
-            `${AXIS_BORDERS[dimension].min}`,
-        );
-
-        const stepWidth =
-            (SVG_SIZE - 2 * CHART_OFFSET) / AXIS_BORDERS[dimension].stepCount;
-
-        for (let i = 0; i < AXIS_BORDERS[dimension].stepCount; i++) {
-            const yPosition = SVG_SIZE - CHART_OFFSET - stepWidth * (i + 1);
-            const axis = document.createElementNS(NAMESPACE, 'line');
-            axis.setAttribute('x1', `${CHART_OFFSET - STEP_LINE_LENGHT}`);
-            axis.setAttribute('x2', `${CHART_OFFSET}`);
-            axis.setAttribute('y1', `${yPosition}`);
-            axis.setAttribute('y2', `${yPosition}`);
-            axis.setAttribute('stroke', AXIS_COLOR);
-            svg.appendChild(axis);
-
-            drawText(
-                svg,
-                {
-                    x: CHART_OFFSET - STEP_LINE_LENGHT - STEP_TEXT_GAP,
-                    y: yPosition,
-                },
-                STEP_FONT_SIZE,
-                { horizontal: 'right', vertical: 'middle' },
-                `${AXIS_BORDERS[dimension].min + AXIS_BORDERS[dimension].step * (i + 1)}`,
-            );
-        }
-    }
-}
-
 function drawDatapoints(svg, data, selectedDimensions) {
     const xMin = AXIS_BORDERS[selectedDimensions.xAxis - 2].min;
     const xMax = AXIS_BORDERS[selectedDimensions.xAxis - 2].max;
@@ -459,15 +493,23 @@ function drawDatapoints(svg, data, selectedDimensions) {
     const yMax = AXIS_BORDERS[selectedDimensions.yAxis - 2].max;
 
     data.forEach((element) => {
-        const xValue = element[selectedDimensions.xAxis]
+        let xValue = element[selectedDimensions.xAxis]
             ? element[selectedDimensions.xAxis]
             : xMin;
-        const yValue = element[selectedDimensions.yAxis]
+        let yValue = element[selectedDimensions.yAxis]
             ? element[selectedDimensions.yAxis]
             : yMin;
         const sizeValue = element[selectedDimensions.size]
             ? element[selectedDimensions.size]
             : (MIN_SIZE / 3) * 2;
+
+        if (selectedDimensions.xAxis === 8) {
+            xValue = xValue - xMin;
+        }
+
+        if (selectedDimensions.yAxis === 8) {
+            yValue = yValue - yMin;
+        }
 
         const position = {
             x:

@@ -76,7 +76,7 @@ function showDetails(data) {
     );
 }
 
-function getDescriptionLabel(selectedDimension, dimensionIndex) {
+function getDimensionLabel(selectedDimension, dimensionIndex) {
     let label = '';
 
     switch (selectedDimension) {
@@ -104,6 +104,31 @@ function getDescriptionLabel(selectedDimension, dimensionIndex) {
                     break;
             }
 
+            break;
+        case 'axis':
+            switch (dimensionIndex) {
+                case 2:
+                    label = 'Verbrauch';
+                    break;
+                case 3:
+                    label = 'Zylinder';
+                    break;
+                case 4:
+                    label = 'Hubraum';
+                    break;
+                case 5:
+                    label = 'PS';
+                    break;
+                case 6:
+                    label = 'Gewicht';
+                    break;
+                case 7:
+                    label = 'Beschleunigung';
+                    break;
+                case 8:
+                    label = 'Jahr';
+                    break;
+            }
             break;
         case 'size':
             switch (dimensionIndex) {
