@@ -1,0 +1,30 @@
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    width: 100%;
+}
+
+.select-container,
+.data-container {
+    display: flex;
+    padding: 1rem;
+    gap: 1rem;
+    justify-content: space-around;
+}
+
+.select-container select {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.svg-container {
+    width: 80%;
+}
+
+.details-container {
+    width: 20%;
+}

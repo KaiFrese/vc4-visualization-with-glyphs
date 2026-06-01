@@ -1,16 +1,41 @@
 const NAMESPACE = 'http://www.w3.org/2000/svg';
 
-const SVG_SIZE = 1000;
-const CHART_OFFSET = 100;
+const SVG_SIZE = 1100;
+const CHART_OFFSET = 150;
 const STEP_LINE_LENGHT = 15;
 const STEP_FONT_SIZE = 17;
 const STEP_TEXT_GAP = 3;
 const MIN_SIZE = 15;
+const CHART_DESCRIPTION_Y_POSITION = 50;
+const CHART_DESCRIPTION_LABEL_Y_POSITION = 10;
 
-const BACKGROUND_COLOR = '#cccccc';
 const AXIS_COLOR = '#000000';
 const TEXT_COLOR = '#000000';
-const BORDER_COLOR = '#000000';
+const BORDER_COLOR = '#00000099';
+const CYLINDER_COLORS = [
+    '#f2f0f799',
+    '#dadaeb99',
+    '#bcbddc99',
+    '#9e9ac899',
+    '#756bb199',
+    '#54278f99',
+];
+const YEAR_COLORS = [
+    '#fcfbfd99',
+    '#ede4f599',
+    '#d6c3e899',
+    '#c0a7d899',
+    '#a887c899',
+    '#8e6ab299',
+    '#7d56a399',
+    '#6c439499',
+    '#5c348499',
+    '#47216e99',
+    '#2b084d99',
+    '#1a033199',
+    '#00000099',
+];
+const ORIGIN_COLORS = ['#66c2a599', '#fc8d6299', '#8da0cb99'];
 
 const AXIS_BORDERS = [
     { min: 0, max: 20, step: 5, stepCount: 4 }, // consumption
@@ -34,26 +59,279 @@ const SIZE_BORDERS = [
 
 function drawChart(svg, data, selectedDimensions) {
     svg.innerHTML = '';
-    drawRect(
-        { x: SVG_SIZE / 2, y: SVG_SIZE / 2 },
-        BACKGROUND_COLOR,
-        SVG_SIZE,
-        svg,
-    );
     drawXAxis(svg, selectedDimensions.xAxis - 2);
     drawYAxis(svg, selectedDimensions.yAxis - 2);
     drawDatapoints(svg, data, selectedDimensions);
+    drawChartDescriptions(svg, selectedDimensions);
 }
 
-function drawChartDescriptions(
-    colorDescriptionSVG,
-    shapeDescriptionSVG,
-    sizeDescriptionSVG,
-    selectedDimensions,
-) {
-    colorDescriptionSVG.style.display = 'none';
-    shapeDescriptionSVG.style.display = 'none';
-    sizeDescriptionSVG.style.display = 'none';
+function drawChartDescriptions(svg, selectedDimensions) {
+    drawText(
+        svg,
+        { x: 2, y: CHART_DESCRIPTION_LABEL_Y_POSITION },
+        STEP_FONT_SIZE,
+        { horizontal: 'left', vertical: 'middle' },
+        getDescriptionLabel('color', selectedDimensions.color),
+    ).setAttribute('font-weight', 'bold');
+    drawText(
+        svg,
+        { x: 530, y: CHART_DESCRIPTION_LABEL_Y_POSITION },
+        STEP_FONT_SIZE,
+        { horizontal: 'left', vertical: 'middle' },
+        getDescriptionLabel('shape', selectedDimensions.shape),
+    ).setAttribute('font-weight', 'bold');
+    drawText(
+        svg,
+        { x: 830, y: CHART_DESCRIPTION_LABEL_Y_POSITION },
+        STEP_FONT_SIZE,
+        { horizontal: 'left', vertical: 'middle' },
+        getDescriptionLabel('size', selectedDimensions.size),
+    ).setAttribute('font-weight', 'bold');
+
+    if (selectedDimensions.size > 1) {
+        const maxSize =
+            MIN_SIZE *
+            Math.sqrt(
+                SIZE_BORDERS[selectedDimensions.size - 2].max /
+                    SIZE_BORDERS[selectedDimensions.size - 2].min,
+            );
+
+        drawCircle(
+            { x: 840, y: CHART_DESCRIPTION_Y_POSITION },
+            '#000000',
+            MIN_SIZE,
+            svg,
+        );
+        drawCircle(
+            { x: 930, y: CHART_DESCRIPTION_Y_POSITION },
+            '#000000',
+            maxSize,
+            svg,
+        );
+        drawText(
+            svg,
+            { x: 855, y: CHART_DESCRIPTION_Y_POSITION },
+            STEP_FONT_SIZE,
+            { horizontal: 'left', vertical: 'middle' },
+            `${SIZE_BORDERS[selectedDimensions.size - 2].min}`,
+        );
+        drawText(
+            svg,
+            { x: 960, y: CHART_DESCRIPTION_Y_POSITION },
+            STEP_FONT_SIZE,
+            { horizontal: 'left', vertical: 'middle' },
+            `${SIZE_BORDERS[selectedDimensions.size - 2].max}`,
+        );
+    }
+
+    switch (selectedDimensions.color) {
+        case 3:
+            drawText(
+                svg,
+                { x: 15, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'right', vertical: 'middle' },
+                '2',
+            );
+            drawText(
+                svg,
+                {
+                    x: 45 + 30 * CYLINDER_COLORS.length,
+                    y: CHART_DESCRIPTION_Y_POSITION,
+                },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '8',
+            );
+
+            for (let i = 0; i < CYLINDER_COLORS.length; i++) {
+                drawRect(
+                    { x: 45 + 30 * i, y: CHART_DESCRIPTION_Y_POSITION },
+                    CYLINDER_COLORS[i],
+                    30,
+                    svg,
+                );
+            }
+
+            break;
+        case 8:
+            drawText(
+                svg,
+                { x: 40, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'right', vertical: 'middle' },
+                '1970',
+            );
+            drawText(
+                svg,
+                {
+                    x: 70 + 30 * YEAR_COLORS.length,
+                    y: CHART_DESCRIPTION_Y_POSITION,
+                },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '1982',
+            );
+
+            for (let i = 0; i < YEAR_COLORS.length; i++) {
+                drawRect(
+                    { x: 70 + 30 * i, y: CHART_DESCRIPTION_Y_POSITION },
+                    YEAR_COLORS[i],
+                    30,
+                    svg,
+                );
+            }
+
+            break;
+        case 9:
+            drawText(
+                svg,
+                { x: 40, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                'Amerika',
+            );
+            drawText(
+                svg,
+                { x: 160, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                'Europa',
+            );
+            drawText(
+                svg,
+                { x: 280, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                'Japan',
+            );
+
+            for (let i = 0; i < ORIGIN_COLORS.length; i++) {
+                drawRect(
+                    { x: 20 + 120 * i, y: CHART_DESCRIPTION_Y_POSITION },
+                    ORIGIN_COLORS[i],
+                    30,
+                    svg,
+                );
+            }
+
+            break;
+    }
+
+    switch (selectedDimensions.shape) {
+        case 3:
+            drawRect(
+                { x: 540, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+            drawCircle(
+                { x: 590, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+            drawTriangle(
+                { x: 640, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+            drawDiamond(
+                { x: 690, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+            drawCross(
+                { x: 740, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+
+            drawText(
+                svg,
+                { x: 555, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '3',
+            );
+            drawText(
+                svg,
+                { x: 605, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '4',
+            );
+            drawText(
+                svg,
+                { x: 655, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '5',
+            );
+            drawText(
+                svg,
+                { x: 705, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '6',
+            );
+            drawText(
+                svg,
+                { x: 755, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                '8',
+            );
+
+            break;
+        case 9:
+            drawRect(
+                { x: 540, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+            drawTriangle(
+                { x: 640, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+            drawCircle(
+                { x: 740, y: CHART_DESCRIPTION_Y_POSITION },
+                '#000000',
+                MIN_SIZE,
+                svg,
+            );
+
+            drawText(
+                svg,
+                { x: 555, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                'Amerika',
+            );
+            drawText(
+                svg,
+                { x: 655, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                'Europa',
+            );
+            drawText(
+                svg,
+                { x: 755, y: CHART_DESCRIPTION_Y_POSITION },
+                STEP_FONT_SIZE,
+                { horizontal: 'left', vertical: 'middle' },
+                'Japan',
+            );
+
+            break;
+    }
 }
 
 function drawXAxis(svg, dimension) {
@@ -193,7 +471,7 @@ function drawDatapoints(svg, data, selectedDimensions) {
                 ((SVG_SIZE - CHART_OFFSET * 2) / 100) *
                     ((yValue * 100) / (yMax - yMin)),
         };
-        let color = '#ffffff';
+        let color = '#ffffff99';
         let size =
             selectedDimensions.size - 2 >= 0
                 ? MIN_SIZE *
@@ -206,75 +484,78 @@ function drawDatapoints(svg, data, selectedDimensions) {
             case 3:
                 switch (element[3]) {
                     case 3:
-                        color = '#f2f0f7';
+                        color = CYLINDER_COLORS[0];
                         break;
                     case 4:
-                        color = '#dadaeb';
+                        color = CYLINDER_COLORS[1];
                         break;
                     case 5:
-                        color = '#bcbddc';
+                        color = CYLINDER_COLORS[2];
                         break;
                     case 6:
-                        color = '#9e9ac8';
+                        color = CYLINDER_COLORS[3];
+                        break;
+                    case 7:
+                        color = CYLINDER_COLORS[4];
                         break;
                     case 8:
-                        color = '#54278f';
+                        color = CYLINDER_COLORS[5];
                         break;
                 }
                 break;
             case 8:
                 switch (element[8]) {
                     case 1970:
-                        color = '#fcfbfd';
+                        color = YEAR_COLORS[0];
                         break;
                     case 1971:
-                        color = '#ede4f5';
+                        color = YEAR_COLORS[1];
                         break;
                     case 1972:
-                        color = '#d6c3e8';
+                        color = YEAR_COLORS[2];
                         break;
                     case 1973:
-                        color = '#c0a7d8';
+                        color = YEAR_COLORS[3];
                         break;
                     case 1974:
-                        color = '#a887c8';
+                        color = YEAR_COLORS[4];
                         break;
                     case 1975:
-                        color = '#8e6ab2';
+                        color = YEAR_COLORS[5];
                         break;
                     case 1976:
-                        color = '#7d56a3';
+                        color = YEAR_COLORS[6];
                         break;
                     case 1977:
-                        color = '#6c4394';
+                        color = YEAR_COLORS[7];
                         break;
                     case 1978:
-                        color = '#5c3484';
+                        color = YEAR_COLORS[8];
                         break;
                     case 1979:
-                        color = '#47216e';
+                        color = YEAR_COLORS[9];
                         break;
                     case 1980:
-                        color = '#2b084d';
+                        color = YEAR_COLORS[10];
                         break;
                     case 1981:
-                        color = '#1a0331';
+                        color = YEAR_COLORS[11];
                         break;
                     case 1982:
-                        color = '#000000';
+                        color = YEAR_COLORS[12];
                         break;
                 }
                 break;
             case 9:
                 switch (element[9]) {
                     case 'American':
-                        color = '#66c2a5';
+                        color = ORIGIN_COLORS[0];
                         break;
                     case 'European':
-                        color = '#fc8d62';
+                        color = ORIGIN_COLORS[1];
                         break;
                     case 'Japanese':
-                        color = '#8da0cb';
+                        color = ORIGIN_COLORS[2];
                         break;
                 }
                 break;
@@ -327,7 +608,12 @@ function drawDatapoints(svg, data, selectedDimensions) {
         }
 
         addClickEventHandler(dataElement, element);
-        addHoverEventHandler(svg, dataElement, position, element);
+        addHoverEventHandler(
+            svg,
+            dataElement,
+            { x: position.x + 10, y: position.y - 10 },
+            element,
+        );
     });
 }
 

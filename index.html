@@ -9,28 +9,28 @@
     </head>
     <body>
         <input id="file-input" type="file" accept=".txt" />
-        <div>
+        <div class="select-container">
             <label>
                 X-Achse
                 <select id="xAxis-select">
-                    <option value="7">Beschleunigung</option>
-                    <option value="6">Gewicht</option>
-                    <option value="5">PS</option>
                     <option value="2">Verbrauch</option>
-                    <option value="4">Hubraum</option>
                     <option value="3">Zylinder</option>
+                    <option value="4">Hubraum</option>
+                    <option value="5">PS</option>
+                    <option value="6" selected>Gewicht</option>
+                    <option value="7">Beschleunigung</option>
                     <option value="8">Jahr</option>
                 </select>
             </label>
             <label>
                 Y-Achse
                 <select id="yAxis-select">
-                    <option value="7">Beschleunigung</option>
-                    <option value="6">Gewicht</option>
-                    <option value="5">PS</option>
-                    <option value="2">Verbrauch</option>
-                    <option value="4">Hubraum</option>
+                    <option value="2" selected>Verbrauch</option>
                     <option value="3">Zylinder</option>
+                    <option value="4">Hubraum</option>
+                    <option value="5">PS</option>
+                    <option value="6">Gewicht</option>
+                    <option value="7">Beschleunigung</option>
                     <option value="8">Jahr</option>
                 </select>
             </label>
@@ -38,86 +38,65 @@
                 Farbe der Glyphe
                 <select id="color-select">
                     <option value="-1"></option>
+                    <option value="3">Zylinder</option>
                     <option value="8">Jahr</option>
                     <option value="9">Herkunft</option>
-                    <option value="3">Zylinder</option>
                 </select>
             </label>
             <label>
                 Form der Glyphe
                 <select id="shape-select">
                     <option value="-1"></option>
-                    <option value="9">Herkunft</option>
                     <option value="3">Zylinder</option>
+                    <option value="9">Herkunft</option>
                 </select>
             </label>
             <label>
                 Größe der Glyphe
                 <select id="size-select">
                     <option value="-1"></option>
-                    <option value="7">Beschleunigung</option>
-                    <option value="6">Gewicht</option>
-                    <option value="5">PS</option>
                     <option value="2">Verbrauch</option>
-                    <option value="4">Hubraum</option>
                     <option value="3">Zylinder</option>
+                    <option value="4">Hubraum</option>
+                    <option value="5">PS</option>
+                    <option value="6">Gewicht</option>
+                    <option value="7">Beschleunigung</option>
                     <option value="8">Jahr</option>
                 </select>
             </label>
         </div>
-        <div>
-            <label id="color-description-label"></label>
-            <svg
-                id="color-description-svg"
-                width="100%"
-                height="100%"
-                viewBox="0 0 100 100"
-            ></svg>
-            <label id="shape-description-label"></label>
-            <svg
-                id="shape-description-svg"
-                width="100%"
-                height="100%"
-                viewBox="0 0 100 100"
-            ></svg>
-            <label id="size-description-label"></label>
-            <svg
-                id="size-description-svg"
-                width="100%"
-                height="100%"
-                viewBox="0 0 100 100"
-            ></svg>
-        </div>
-        <div>
-            <svg
-                id="chart-svg"
-                width="100%"
-                height="100%"
-                viewBox="0 0 1000 1000"
-            ></svg>
-        </div>
-        <div>
-            <h2 id="details-0"></h2>
-            <dl>
-                <dt>Hersteller:</dt>
-                <dd id="details-1"></dd>
-                <dt>Jahr:</dt>
-                <dd id="details-8"></dd>
-                <dt>Herkunft:</dt>
-                <dd id="details-9"></dd>
-                <dt>Gewicht:</dt>
-                <dd id="details-6"></dd>
-                <dt>PS:</dt>
-                <dd id="details-5"></dd>
-                <dt>Beschleunigung:</dt>
-                <dd id="details-7"></dd>
-                <dt>Verbrauch:</dt>
-                <dd id="details-2"></dd>
-                <dt>Zylinder:</dt>
-                <dd id="details-3"></dd>
-                <dt>Hubraum:</dt>
-                <dd id="details-4"></dd>
-            </dl>
+        <div class="data-container">
+            <div class="svg-container">
+                <svg
+                    id="chart-svg"
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 1100 1100"
+                ></svg>
+            </div>
+            <div class="details-container">
+                <h2 id="details-0"></h2>
+                <dl>
+                    <dt>Hersteller:</dt>
+                    <dd id="details-1"></dd>
+                    <dt>Jahr:</dt>
+                    <dd id="details-8"></dd>
+                    <dt>Herkunft:</dt>
+                    <dd id="details-9"></dd>
+                    <dt>Gewicht:</dt>
+                    <dd id="details-6"></dd>
+                    <dt>PS:</dt>
+                    <dd id="details-5"></dd>
+                    <dt>Beschleunigung:</dt>
+                    <dd id="details-7"></dd>
+                    <dt>Verbrauch:</dt>
+                    <dd id="details-2"></dd>
+                    <dt>Zylinder:</dt>
+                    <dd id="details-3"></dd>
+                    <dt>Hubraum:</dt>
+                    <dd id="details-4"></dd>
+                </dl>
+            </div>
         </div>
     </body>
 </html>

@@ -31,15 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         shape: -1,
     };
 
-    drawChartDescriptions(
-        colorDescriptionSVG,
-        shapeDescriptionSVG,
-        sizeDescriptionSVG,
-        selectedDimensions,
-    );
-
-    setDescriptionLabels(selectedDimensions);
-
     document.getElementById('file-input').addEventListener('change', () => {
         const fileInput = document.getElementById('file-input');
         if (fileInput.files.length > 0) {
@@ -74,13 +65,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 selectedDimensions[property] = parseInt(event.target.value);
 
                 drawChart(chartSVG, data, selectedDimensions);
-                drawChartDescriptions(
-                    colorDescriptionSVG,
-                    shapeDescriptionSVG,
-                    sizeDescriptionSVG,
-                    selectedDimensions,
-                );
-                setDescriptionLabels(selectedDimensions);
             }),
     );
 });
@@ -92,65 +76,61 @@ function showDetails(data) {
     );
 }
 
-function setDescriptionLabels(selectedDimensions) {
-    const colorDescriptionLabel = document.getElementById(
-        'color-description-label',
-    );
-    const shapeDescriptionLabel = document.getElementById(
-        'shape-description-label',
-    );
-    const sizeDescriptionLabel = document.getElementById(
-        'size-description-label',
-    );
+function getDescriptionLabel(selectedDimension, dimensionIndex) {
+    let label = '';
 
-    switch (selectedDimensions.color) {
-        case 3:
-            colorDescriptionLabel.innerHTML = 'Zylinder';
+    switch (selectedDimension) {
+        case 'color':
+            switch (dimensionIndex) {
+                case 3:
+                    label = 'Zylinder';
+                    break;
+                case 8:
+                    label = 'Jahr';
+                    break;
+                case 9:
+                    label = 'Herkunft';
+                    break;
+            }
+
             break;
-        case 8:
-            colorDescriptionLabel.innerHTML = 'Jahr';
+        case 'shape':
+            switch (dimensionIndex) {
+                case 3:
+                    label = 'Zylinder';
+                    break;
+                case 9:
+                    label = 'Herkunft';
+                    break;
+            }
+
             break;
-        case 9:
-            colorDescriptionLabel.innerHTML = 'Herkunft';
+        case 'size':
+            switch (dimensionIndex) {
+                case 2:
+                    label = 'Verbrauch';
+                    break;
+                case 3:
+                    label = 'Zylinder';
+                    break;
+                case 4:
+                    label = 'Hubraum';
+                    break;
+                case 5:
+                    label = 'PS';
+                    break;
+                case 6:
+                    label = 'Gewicht';
+                    break;
+                case 7:
+                    label = 'Beschleunigung';
+                    break;
+                case 8:
+                    label = 'Jahr';
+                    break;
+            }
             break;
-        default:
-            colorDescriptionLabel.innerHTML = '';
     }
 
-    switch (selectedDimensions.shape) {
-        case 3:
-            shapeDescriptionLabel.innerHTML = 'Zylinder';
-            break;
-        case 9:
-            shapeDescriptionLabel.innerHTML = 'Herkunft';
-            break;
-        default:
-            shapeDescriptionLabel.innerHTML = '';
-    }
-
-    switch (selectedDimensions.size) {
-        case 2:
-            sizeDescriptionLabel.innerHTML = 'Verbrauch';
-            break;
-        case 3:
-            sizeDescriptionLabel.innerHTML = 'Zylinder';
-            break;
-        case 4:
-            sizeDescriptionLabel.innerHTML = 'Hubraum';
-            break;
-        case 5:
-            sizeDescriptionLabel.innerHTML = 'PS';
-            break;
-        case 6:
-            sizeDescriptionLabel.innerHTML = 'Gewicht';
-            break;
-        case 7:
-            sizeDescriptionLabel.innerHTML = 'Beschleunigung';
-            break;
-        case 8:
-            sizeDescriptionLabel.innerHTML = 'Jahr';
-            break;
-        default:
-            sizeDescriptionLabel.innerHTML = '';
-    }
+    return label;
 }
