@@ -70,10 +70,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function showDetails(data) {
-    data.forEach(
-        (value, index) =>
-            (document.getElementById(`details-${index}`).innerHTML = value),
-    );
+    data.forEach((value, index) => {
+        let unit = '';
+
+        switch (index) {
+            case 2:
+                unit = ' km/l';
+                break;
+            case 4:
+                unit = ' ccm';
+                break;
+            case 6:
+                unit = ' kg';
+                break;
+            case 7:
+                unit = ' s';
+                break;
+        }
+
+        document.getElementById(`details-${index}`).innerHTML =
+            `${value}${unit}`;
+    });
 }
 
 function getDimensionLabel(selectedDimension, dimensionIndex) {
@@ -108,22 +125,22 @@ function getDimensionLabel(selectedDimension, dimensionIndex) {
         case 'axis':
             switch (dimensionIndex) {
                 case 2:
-                    label = 'Verbrauch';
+                    label = 'Verbrauch in km/l';
                     break;
                 case 3:
                     label = 'Zylinder';
                     break;
                 case 4:
-                    label = 'Hubraum';
+                    label = 'Hubraum in ccm';
                     break;
                 case 5:
                     label = 'PS';
                     break;
                 case 6:
-                    label = 'Gewicht';
+                    label = 'Gewichtin kg';
                     break;
                 case 7:
-                    label = 'Beschleunigung';
+                    label = 'Beschleunigung in s';
                     break;
                 case 8:
                     label = 'Jahr';
@@ -133,22 +150,22 @@ function getDimensionLabel(selectedDimension, dimensionIndex) {
         case 'size':
             switch (dimensionIndex) {
                 case 2:
-                    label = 'Verbrauch';
+                    label = 'Verbrauch in km/l';
                     break;
                 case 3:
                     label = 'Zylinder';
                     break;
                 case 4:
-                    label = 'Hubraum';
+                    label = 'Hubraum in ccm';
                     break;
                 case 5:
                     label = 'PS';
                     break;
                 case 6:
-                    label = 'Gewicht';
+                    label = 'Gewicht in kg';
                     break;
                 case 7:
-                    label = 'Beschleunigung';
+                    label = 'Beschleunigung in s';
                     break;
                 case 8:
                     label = 'Jahr';
